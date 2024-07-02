@@ -22,7 +22,7 @@ Clone the source code:
 ```
 git clone https://github.com/GYKgamer/cs16-client --recursive
 ```
-### Emscripten (WIP)
+### Emscripten (WIP, Linux only)
 ```
 Download Emscripten at https://emscripten.org/docs/getting_started/downloads.html
 then run the commands: mkdir build-html5 && cd build-html5
