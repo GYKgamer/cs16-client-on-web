@@ -20,8 +20,19 @@ After that, just install the APK and run.
 ## Building
 Clone the source code:
 ```
-git clone https://github.com/Velaron/cs16-client --recursive
+git clone https://github.com/GYKgamer/cs16-client --recursive
 ```
+### Emscripten (WIP)
+```
+Download Emscripten at https://emscripten.org/docs/getting_started/downloads.html
+then run the commands: mkdir build-html5 && cd build-html5
+and run the commands:
+emcmake cmake ..
+emmake cmake --build .
+after it compiles run the compile script: ./compile_to_js
+```
+Now javascript files will be built, the slight issue being, I don't know how to use them. If anyone knows, make a pull request please
+
 ### Windows
 ```
 cmake -A Win32 -S . -B build
