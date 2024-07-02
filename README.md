@@ -29,6 +29,7 @@ then run the commands: mkdir build-html5 && cd build-html5
 and run the commands:
 emcmake cmake ..
 emmake cmake --build .
+(If you get an error about fontconfig.h not found, follow [this tutorial on how to fix it](https://github.com/GYKgamer/cs16-client-on-web/blob/main/errors/fontconfig.h%20not%20found)
 after it compiles run the compile script in the root directory: ./compile_to_js
 ```
 Now javascript files will be built, the slight issue being, I don't know how to use them. If anyone knows, make a pull request please
