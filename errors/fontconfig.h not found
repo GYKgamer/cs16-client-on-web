@@ -5,5 +5,5 @@ In file included from cs16-client/3rdparty/mainui_cpp/font/FontManager.cpp:23:
       |              ^~~~~~~~~~~~~~~~~~~~~~~~~
   Then the fix is easy.
   Go to your terminal and type: nano (location where you saved the repository)/cs16-client/3rdparty/mainui_cpp/font/FreeTypeFont.h
-  go to line 25 where it says "#include <fontconfig/fontconfig.h>" and edit that to be "#include </usr/include/fontconfig/fontconfig.h>"
-  then do ctrl + x, y and enter, which saves the file and rerun the build command, the error should be fixed
+  Go to line 25 where it says "#include <fontconfig/fontconfig.h>" and edit that to be "#include </usr/include/fontconfig/fontconfig.h>"
+  Then do ctrl + x, y and enter, which saves the file and rerun the build command, the error should be fixed
