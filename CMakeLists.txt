@@ -5,7 +5,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 set(EXTRAS_DIR "${CMAKE_CURRENT_BINARY_DIR}/extras")
 
 include(LibraryNaming)
-# include(ExternalProject)
 
 option(BUILD_CLIENT "Build client library." ON)
 option(BUILD_MAINUI "Build menu library." ON)
@@ -15,56 +14,55 @@ set(GAME_DIR "cstrike" CACHE STRING "Game directory name.")
 set(CLIENT_INSTALL_DIR "cl_dlls" CACHE STRING "Client library location.")
 set(SERVER_INSTALL_DIR "dlls" CACHE STRING "Server library location.")
 
-# if(MSVC AND CMAKE_BUILD_TYPE STREQUAL "Debug")
-# 	add_compile_options(/fsanitize=address)
-# 	add_link_options(/fsanitize=address)
-# endif()
+#Compiler flags
+if(EMSCRIPTEN)
+    message(STATUS "Configuring for Emscripten (WebAssembly)")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msimd128")
+    string(REPLACE "-mmmx" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REPLACE "-msse" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REPLACE "-msse2" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REPLACE "-msse3" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REPLACE "-mssse3" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REPLACE "-msse4.1" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REPLACE "-msse4.2" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REPLACE "-msse4" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REPLACE "-mavx" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REPLACE "-mfpu=neon" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmmx -msse -msse2 -msse3")
+endif()
 
 if(VITA)
-	message(STATUS "Building for PS Vita")
-	add_compile_options(-fno-use-cxa-atexit)
+    message(STATUS "Building for PS Vita")
+    add_compile_options(-fno-use-cxa-atexit)
 endif()
 
 if(BUILD_CLIENT)
-	add_subdirectory(cl_dll)
+    add_subdirectory(cl_dll)
 endif()
 
-# if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-# 	set(MESON_BUILD_TYPE debug)
-# elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-# 	set(MESON_BUILD_TYPE debugoptimized)
-# else()
-# 	set(MESON_BUILD_TYPE release)
-# endif()
-
 if(BUILD_SERVER)
-	# ExternalProject_Add(
-	# 	yapb
-	# 	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/yapb
-	# 	CONFIGURE_COMMAND meson setup --buildtype ${MESON_BUILD_TYPE} build
-	# 	BUILD_COMMAND meson compile -C build
-	# 	BUILD_ALWAYS 1
-	# 	BUILD_IN_SOURCE 1
-	# 	INSTALL_COMMAND meson install -C build --destdir ${CMAKE_INSTALL_PREFIX}
-	# )
-	add_subdirectory(3rdparty/yapb)
-	add_subdirectory(3rdparty/ReGameDLL_CS)
+    if(NOT EMSCRIPTEN)
+        add_subdirectory(3rdparty/ReGameDLL_CS)
+    endif()
 endif()
 
 if(BUILD_MAINUI)
-#	set(CS16CLIENT ON)
-	# set(XASH_SDK ../../)
-	add_subdirectory(3rdparty/mainui_cpp)
+    add_subdirectory(3rdparty/mainui_cpp)
+
+    # Include directory for fontconfig due to emcc not finding it automatically
+    target_include_directories(menu PRIVATE "/usr/include/fontconfig")
 endif()
 
 include(GenerateExtras)
 
+# Packaging configurations
 if(WIN32)
-	set(CPACK_GENERATOR "ZIP")
-	set(CPACK_PACKAGE_FILE_NAME "CS16Client-${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
+    set(CPACK_GENERATOR "ZIP")
+    set(CPACK_PACKAGE_FILE_NAME "CS16Client-${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
 else()
-	set(CPACK_GENERATOR "TGZ")
-	set(CPACK_PACKAGE_FILE_NAME "CS16Client-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
+    set(CPACK_GENERATOR "TGZ")
+    set(CPACK_PACKAGE_FILE_NAME "CS16Client-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
 set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
