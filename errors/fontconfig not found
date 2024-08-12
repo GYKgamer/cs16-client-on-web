@@ -1,0 +1,14 @@
+So if you get an error like this one below:
+-- Checking for module 'fontconfig'
+--   Package 'fontconfig', required by 'virtual:world', not found
+CMake Error at /usr/share/cmake-3.25/Modules/FindPkgConfig.cmake:607 (message):
+  A required package was not found
+Call Stack (most recent call first):
+  /usr/share/cmake-3.25/Modules/FindPkgConfig.cmake:829 (_pkg_check_modules_internal)
+  3rdparty/mainui_cpp/CMakeLists.txt:103 (pkg_check_modules)
+
+Then the fix is simple.
+Step 1: run sudo apt-get install libfontconfig1-dev in a terminal
+Step 2: cd to / in terminal and run the command "find /usr/lib -name fontconfig.pc"
+Step 3: Now run the command "export PKG_CONFIG_PATH=(Include your path here):$PKG_CONFIG_PATH" (Make sure to change the "Include your path here" with the path you got when running step 2
+Step 4: Re run the build command (in the same terminal window) and it should work
